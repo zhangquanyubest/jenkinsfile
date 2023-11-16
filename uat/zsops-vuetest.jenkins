@@ -1,0 +1,35 @@
+@Library('global-shared-library@master') _
+
+def map = [:]
+    // 定义项目构建运行的 NODE ,根据实际情况进行调整,需要在jenkins系统管理-系统配置-标签
+    map.put('RUN_NODE','master')
+    // 需要修改此处，定义项目名称
+    map.put('SERVICE_NAME','vuetest')
+    // 定义webroot目录,一般建议/data/wwwroot/${SERVICE_NAME}下
+    map.put('WEBROOT_DIR','/data/wwwroot/${SERVICE_NAME}')
+    // 定义项目默认的分支，根据实际情况调整
+    map.put('DEFAULT_BRANCH','master')
+    // 定义项目git地址
+    map.put('GIT_URL','https://gitlab.zsnetwork.com/ywbzb/yth2/vuetest.git')
+    // 定义主机选项参数，多台用\n分割
+    map.put('HOSTS','ALL\n192.168.115.12')
+    // 定义项目编译命令
+    map.put('BUILD_COMMAND','npm install --registry=http://192.168.115.12:8081/repository/npm-group/ && npm run build')
+    // 定义项目部署之后执行的脚本,注意此脚本执行位置为 ${WEBROOT_DIR}
+    map.put('FREE_COMMAND','chown -R www.www /data/wwwroot/${SERVICE_NAME}/')
+    // 定义忽略文件或目录，多个用 \n 分割
+    map.put('EXCLUDE_FILE','ansible_tmp\nansible_tmp@tmp\n.git\nnode_modules')
+    // 用于打包编译的基础镜像
+    map.put('BUILD_BASE_IMAGE','node:18.18.0')
+    // 指定将要部署到远程的目录,如果部署根目录，用 . 表示
+    map.put('PROJECT_FILE_PATH','build')
+    // 指定机器人key本次不需要
+    // map.put('ROBOT_KEY','dingtalk-robot')
+    // 指定版本的路径以及key，一般不需要更改如下两项
+    map.put('VERSION_KEY', "$JOB_BASE_NAME" )
+    map.put('VERSION_FILE', "/data/jenkins_sync/version/$JOB_BASE_NAME" )
+    // 钉钉通知人员本次不需要 
+    // map.put('NOTICE_MEMBER', "13888888888" )
+deploy_front_base(map)
+// 名字与share_library/var/deploy_front_base.groovy文件名一致
+
